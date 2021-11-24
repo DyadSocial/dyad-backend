@@ -2,15 +2,11 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:10-alpine
+    image: postgres:14-alpine
     volumes:
       - ./data/db:/var/lib/postgresql/data
-
-    environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_NAME=app
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=badstar55
+    env_file:
+      - ./.env.dev
     ports:
       - "5432:5432"
   web:
@@ -21,8 +17,24 @@ services:
               python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./code:/code
+    env_file:
+      - ./.env.dev
     ports:
       - "8000:8000"
     depends_on:
       - db
-  
+  redis: 
+    image: redis:alpine
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A core worker -l info
+    volumes:
+    - ./code:/code
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+      - redis
+      - web
