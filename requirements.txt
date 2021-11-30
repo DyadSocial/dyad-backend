@@ -3,5 +3,6 @@ psycopg2-binary>=2.8
 django-redis>=4.0
 Pillow
 django-widget-tweaks
+djangorestframework
 redis>=4.0
 celery>=5.2.0
