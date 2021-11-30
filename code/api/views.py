@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render
 from django.http import HttpResponse
+from rest_framework.decorators import api_view
 
 # Create your views here.
 def index(request):
@@ -21,3 +22,11 @@ def post_user(request):
         return JsonResponse(posts_serializer.data, status=status.HTTP_201_CREATED)
     else:
         return JsonResponse(posts_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+@api_view(['GET'])
+def post_list(request):
+  if request.method == 'GET':
+    allPosts = Post.objects.all()
+    post_serializer = PostSerializer(allPosts, many = True)
+    return JsonResponse(post_serializer.data, safe= False)
+    
