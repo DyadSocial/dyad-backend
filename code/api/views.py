@@ -5,7 +5,6 @@ from rest_framework.decorators import api_view
 from api.models import Post
 from api.serializers import PostSerializer
 
-
 # Create your views here.
 def index(request):
     return HttpResponse("Hello world. You're at the api index.")

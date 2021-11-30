@@ -8,4 +8,4 @@ class PostSerializer(serializers.ModelSerializer):
                   'title',
                   'content',
                   'date',
-                  'optional_image')
+                  'image')
