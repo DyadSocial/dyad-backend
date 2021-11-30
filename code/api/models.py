@@ -6,7 +6,7 @@ class Post(models.Model):
     title = models.CharField(max_length=32)
     content = models.CharField(max_length=280)
     date = models.DateTimeField('Date Created')
-    optional_image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/%Y/%m/%d', blank = True)
     
     def __str__(self):
         return self.title

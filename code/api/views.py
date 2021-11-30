@@ -1,7 +1,10 @@
 import json
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view
+from api.models import Post
+from api.serializers import PostSerializer
+
 
 # Create your views here.
 def index(request):
