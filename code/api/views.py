@@ -7,11 +7,11 @@ def index(request):
     return HttpResponse("Hello world. You're at the api index.")
 
 @api_view(['GET', 'POST'])
-def post_list(request):
+def post_user(request):
   if request.method == 'GET':
     requestUser = request.GET.get('username')
-    post = Post.objects.filter(username=requestUser)
-    posts_serializer = PostSerializer(posts, many = True)
+    usersPosts = Post.objects.filter(username=requestUser)
+    posts_serializer = PostSerializer(usersPosts, many = True)
     return JsonResponse(post_serializer.data, safe=False)
   elif request.method == 'POST':
     post_data = JSONParser().parse(request)
