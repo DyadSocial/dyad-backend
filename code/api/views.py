@@ -15,7 +15,7 @@ def post_list(request):
     return JsonResponse(post_serializer.data, safe=False)
   elif request.method == 'POST':
     post_data = JSONParser().parse(request)
-    posts_serializer = PostSerializer(data=user_data)
+    posts_serializer = PostSerializer(data=post_data)
     if posts_serializer.is_valid():
         posts_serializer.save()
         return JsonResponse(postss_serializer.data, status=status.HTTP_201_CREATED)
