@@ -2,8 +2,12 @@ from django.db import models
 
 # Create your models here.
 class Post(models.Model):
-    user = models.CharField(max_length=24)
-    userid = models.IntegerField(default=0)
+    username = models.CharField(max_length=24)
+    title = models.CharField(max_length=32)
+    content = models.CharField(max_length=280)
     date = models.DateTimeField('Date Created')
-    optional_image = 
+    optional_image = models.ImageField(upload_to='images/')
+    
+    def __str__(self):
+        return self.title
 
