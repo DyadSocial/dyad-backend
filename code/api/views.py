@@ -12,12 +12,12 @@ def post_user(request):
     requestUser = request.GET.get('username')
     usersPosts = Post.objects.filter(username=requestUser)
     posts_serializer = PostSerializer(usersPosts, many = True)
-    return JsonResponse(post_serializer.data, safe=False)
+    return JsonResponse(posts_serializer.data, safe=False)
   elif request.method == 'POST':
     post_data = JSONParser().parse(request)
     posts_serializer = PostSerializer(data=post_data)
     if posts_serializer.is_valid():
         posts_serializer.save()
-        return JsonResponse(postss_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(posts_serializer.data, status=status.HTTP_201_CREATED)
     else:
-        return JsonResponse(postss_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(posts_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
