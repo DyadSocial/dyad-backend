@@ -9,14 +9,6 @@ from .serializers import DyadUserSerializer
 
 from .models import DyadUser
 
-# @api_view(['GET'])
-# def test_ping(request):
-    
-#     ping_test = "This is a test ping, the API is up and running!"
-
-#     if request.method == 'GET':
-#         return Response(ping_test)
-
 @api_view(['POST'])
 def API_Overview(request):
     #TODO: returns a list of all api calls
@@ -42,14 +34,22 @@ def DyadCreateUser(request):
     return Response(serialized_content.data)
 
 @api_view(['POST'])
-def UpdateUserFields(request):
-    #TODO
-    pass
+def DyadUpdateUserFields(request, pk):
+    update_user = DyadUser.objects.get(id = pk)
+    serialized_content = DyadUserSerializer(instance = update_user,data = request.data)
 
-@api_view(['POST'])
-def UpdateUserFields(request):
-    #TODO
-    pass
+    if serialized_content.is_valid():
+        serialized_content.save()    
+
+    return Response(serialized_content.data)
+
+@api_view(['DELETE'])
+def DyadDeleteUser(request, pk):
+    delete_user = DyadUser.objects.get(id = pk)
+    delete_user.delete()
+    return Response(serialized_content.data)
+    
+
 
 
 # Create your views here.
