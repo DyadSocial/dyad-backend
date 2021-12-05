@@ -17,13 +17,43 @@ from .models import DyadUser
 #     if request.method == 'GET':
 #         return Response(ping_test)
 
+@api_view(['POST'])
+def API_Overview(request):
+    #TODO: returns a list of all api calls
+    pass
+
 
 @api_view(['GET'])
 #TODO: make this function require admin privileges
-def get_all_users(request):
+def GetAllUsers(request):
 
     users = DyadUser.objects.all()
     serializer = DyadUserSerializer(users, many = True)
     return Response(serializer.data)
+
+#create a new user endpoint
+@api_view(['POST'])
+def CreateUser(request):
+    serialized_content = DyadUserSerializer(data = request.data)
+
+    if serialized_content.is_valid():
+        serialized_content.save()
+
+    return Response(serialized_content.data)
+
+@api_view(['POST'])
+def UpdateUserFields(request):
+    #TODO
+    pass
+
+@api_view(['POST'])
+def UpdateUserFields(request):
+    serialized_content = DyadUserSerializer(data = request.data)
+
+    if serialized_content.is_valid():
+        serialized_content.save()
+
+    return Response(serialized_content.data)
+
 
 # Create your views here.
