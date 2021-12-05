@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import User
+from .models import DyadUser
 
 # class UserSerializer(serializers.Serializer):
 #     username = serializers.Ch
@@ -8,3 +8,8 @@ from core.models import User
 #     fields = ('username',
 #                 'phone',
 #                 'accountCreated')
+
+class DyadUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DyadUser
+        fields = '__all__'

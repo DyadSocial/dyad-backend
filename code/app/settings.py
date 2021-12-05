@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'widget_tweaks',
     'core',
-    'api'
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
