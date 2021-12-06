@@ -34,11 +34,11 @@ def post_user(request):
     return HttpResponse("Successfully deleted post!")
 
 @api_view(['DELETE'])
-def delete_post(request, pk):
+def DeletePost(request, pk):
   userDeletePost = Post.objects.get(id = pk)
   userDeletePost.delete()
-
-  return HttpResponse("Post Successfully deleted")
+  stri = "Succesfully Deleted Post!"
+  return Response(stri)
 
 
       

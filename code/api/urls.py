@@ -9,5 +9,5 @@ urlpatterns = [
     # url(r'posts/all$', views.post_list)
     path('post-user/', views.post_user, name = "post-user"),
     # path('post-user/<str:pk>', views.post_user, name = "post-user")
-    path('delete-post/<str:pk>', views.delete_post, name = "delete-user")    
+    path('delete-post/<str:pk>/', views.DeletePost, name = "delete-user")    
 ]

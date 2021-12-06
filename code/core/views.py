@@ -47,9 +47,6 @@ def DyadUpdateUserFields(request, pk):
 def DyadDeleteUser(request, pk):
     delete_user = DyadUser.objects.get(id = pk)
     delete_user.delete()
-    return Response(serialized_content.data)
+    return Response("Successfully deleted user!")
     
 
-
-
-# Create your views here.
