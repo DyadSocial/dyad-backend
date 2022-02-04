@@ -22,6 +22,8 @@ class DyadUser(User):
     #email = models.CharField(max_length = 254)
     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
     date_created = models.DateTimeField(auto_now_add = True)
+    # last_active = models.DateTimeField(auto_now_add = True)
+    last_active = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     #is_superuser = models.BooleanField()
     #last_login = models.DateTimeField(blank = True, null = True)
     # is_staff = models.BooleanField()
