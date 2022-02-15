@@ -13,3 +13,9 @@ class DyadUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DyadUser
         fields = '__all__'
+
+class DyadAuthSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DyadUser
+        fields = ('username',
+                    'password')

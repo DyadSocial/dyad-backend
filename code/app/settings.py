@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.SetLastVisitMiddleware'
+    # 'core.middleware.SetLastVisitMiddleware'
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -143,3 +145,9 @@ IMAGES_DIR = os.path.join(MEDIA_ROOT, 'images')
 
 if not os.path.exists(IMAGES_DIR):
     os.makedirs(IMAGES_DIR)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    )
+}

@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+# from rest_framework.authentication import 
 
-from .serializers import DyadUserSerializer
+from .serializers import DyadUserSerializer, DyadAuthSerializer
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
 
@@ -48,5 +49,13 @@ def DyadDeleteUser(request, pk):
     delete_user = DyadUser.objects.get(id = pk)
     delete_user.delete()
     return Response("Successfully deleted user!")
-    
+
+
+@api_view(['POST'])
+def DyadLoginAuth(request):
+    serialized_content = DyadUser
+
+# #Testing JWT auth
+# @api_view(['POST'])
+# def DyadLoginAuth(request):
 
