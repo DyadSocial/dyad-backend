@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import DyadUser
-
 # class UserSerializer(serializers.Serializer):
 #     username = serializers.Ch
     
@@ -10,9 +9,19 @@ from .models import DyadUser
 #                 'accountCreated')
 
 class DyadUserSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
     class Meta:
         model = DyadUser
-        fields = '__all__'
+        fields = ('username',
+                    'password')
 
 class DyadAuthSerializer(serializers.ModelSerializer):
     class Meta:

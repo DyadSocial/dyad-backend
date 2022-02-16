@@ -146,8 +146,8 @@ IMAGES_DIR = os.path.join(MEDIA_ROOT, 'images')
 if not os.path.exists(IMAGES_DIR):
     os.makedirs(IMAGES_DIR)
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':(
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
-    )
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES':(
+#         'rest_framework_simplejwt.authentication.JWTAuthentication'
+#     )
+# }

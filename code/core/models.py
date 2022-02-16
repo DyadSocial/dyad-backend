@@ -20,7 +20,7 @@ class DyadGroup(Group):
 class DyadUser(User):
     #username = models.CharField(max_length = 24, unique = True)
     #email = models.CharField(max_length = 254)
-    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
+    # phone_number = PhoneNumberField(null=False, blank=True, unique=True)
     date_created = models.DateTimeField(auto_now_add = True)
     # last_active = models.DateTimeField(auto_now_add = True)
     last_active = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -33,3 +33,8 @@ class DyadUser(User):
 
     #Dyad_Group = models.ForeignKey(DyadGroup, on_delete=models.CASCADE, blank = True, null = False)
 
+# class DyadUser2(models.Model):
+#     username = models.CharField(max_length = 24, unique = True)
+#     date_created = models.DateTimeField(auto_now_add = True)
+#     last_active = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+#     phone_number = PhoneNumberField(null=False, blank=False, unique=True)

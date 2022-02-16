@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView
+
+# from django.contrib.auth import authentication
 # from rest_framework.authentication import 
 
 from .serializers import DyadUserSerializer, DyadAuthSerializer
@@ -9,6 +12,9 @@ from .serializers import DyadUserSerializer, DyadAuthSerializer
 # from snippets.serializers import SnippetSerializer
 
 from .models import DyadUser
+
+
+# class LoginAPIView(GenericAPIView):
 
 @api_view(['POST'])
 def API_Overview(request):
@@ -30,9 +36,17 @@ def DyadCreateUser(request):
     serialized_content = DyadUserSerializer(data = request.data)
 
     if serialized_content.is_valid():
+        # newuser = DyadUser(username=serialized_content["username"],
+        #                     password=serialized_content["password"])
+        # serialized_content.save()
+        # set_pass_user = DyadUser.objects.filter(username="")
+        # newuser.save()
         serialized_content.save()
+        return Response(serialized_content.data["username"])
+    else:
+        return Response("Not saved correctly")
 
-    return Response(serialized_content.data)
+
 
 @api_view(['POST'])
 def DyadUpdateUserFields(request, pk):
@@ -51,9 +65,18 @@ def DyadDeleteUser(request, pk):
     return Response("Successfully deleted user!")
 
 
-@api_view(['POST'])
-def DyadLoginAuth(request):
-    serialized_content = DyadUser
+
+# @api_view(['POST'])
+# def DyadLoginAuth(request):
+#     serialized_content = DyadAuthSerializer(data = request.data)
+
+#     if serialized_content.is_valid():
+#         if DyadUser.objects.filter(username = serialized_content["username"]).exists():
+
+        
+
+
+
 
 # #Testing JWT auth
 # @api_view(['POST'])
