@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'core',
     'api',
     'rest_framework',
+    'corsheaders'
 ]
 
 
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
     # 'core.middleware.SetLastVisitMiddleware'
 ]
 
@@ -151,3 +153,6 @@ if not os.path.exists(IMAGES_DIR):
 #         'rest_framework_simplejwt.authentication.JWTAuthentication'
 #     )
 # }
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
