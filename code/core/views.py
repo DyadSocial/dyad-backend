@@ -6,8 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-# import json
-# from rest_framework.authentication import 
+
 
 from .serializers import DyadUserSerializer, DyadAuthSerializer
 import jwt, datetime
@@ -16,6 +15,20 @@ import jwt, datetime
 
 from .models import DyadUser
 
+class RegisterView(APIView):
+    
+    def post(self, request):
+        serializer = DyadUserSerializer(data = request.data)
+        serializer.is_valid(raise_exception = True)
+        serializer.save()
+
+        response = Response()
+
+        response.data = {
+            'message: The User has been successfully created!'
+        }
+
+        return response
 
 class LoginView(APIView):
     
