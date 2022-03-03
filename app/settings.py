@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4nsz!@4o8ulvsfig391$brh^f$23vghri&67^$g@&(1vb(rq8-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["api.dyadsocial.com"]
 
 
 # Application definition
