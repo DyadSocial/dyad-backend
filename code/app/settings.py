@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-@1%7zt55@@$g@9@716j8%*gkfxoriqx+=g)_w5!vbp0$=xj^6s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["api.dyadsocial.com", "192.168.1.19"]
+ALLOWED_HOSTS = ["api.dyadsocial.com"]
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_grpc_framework',
     'phonenumber_field',
     'widget_tweaks',
     'core',
