@@ -1,0 +1,32 @@
+FROM debian:buster
+WORKDIR /workspace
+ENV DEBIAN_FRONTEND="noninteractive"
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl git unzip xz-utils zip wget ssh sudo tar make g++ libtool autoconf automake zip unzip ca-certificates
+RUN sudo mkdir -p /usr/local/share/ca-certificates/cacert.org
+RUN wget -P /usr/local/share/ca-certificates/cacert.org http://www.cacert.org/certs/root.crt http://www.cacert.org/certs/class3.crt
+RUN sudo update-ca-certificates
+RUN git config --global http.sslCAinfo /etc/ssl/certs/ca-certificates.crt
+
+# Install Bazel
+RUN wget https://github.com/bazelbuild/bazel/releases/download/5.0.0/bazel-5.0.0-installer-darwin-arm64.sh --no-check-certificate
+RUN chmod +x bazel-5.0.0-installer-darwin-arm64.sh && ./bazel-5.0.0-installer-darwin-arm64.sh --user
+ENV PATH="$PATH:$HOME/bin"
+
+WORKDIR /repos
+
+# Install protobufs
+RUN git clone https://github.com/protocolbuffers/protobuf.git && cd protobuf && git submodule update --init --recursive && ./autogen.sh
+ENV LD_LIBRARY_PATH='/usr'
+RUN cd protobuf && ./configure --prefix=/usr && make -j$(nproc)
+WORKDIR /repos/protobuf
+# RUN make check
+RUN make install && sudo ldconfig
+
+# Install gRPC
+WORKDIR /repos
+ENV CC=/usr/bin/gcc
+RUN git clone https://github.com/grpc/grpc.git
+RUN cd grpc && ~/bin/bazel build :all
+# RUN cd grpc && ~/bin/bazel test --config=dbg //test/...
+
