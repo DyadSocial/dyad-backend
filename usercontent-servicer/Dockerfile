@@ -1,5 +1,6 @@
-FROM debian:buster
+FROM debian:bullseye
 WORKDIR /workspace
+RUN mkdir -p /workspace/lib
 ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl git unzip xz-utils zip wget ssh sudo tar make g++ libtool autoconf automake zip unzip ca-certificates
@@ -25,8 +26,22 @@ RUN make install && sudo ldconfig
 
 # Install gRPC
 WORKDIR /repos
-ENV CC=/usr/bin/gcc
+ENV CC=/usr/bin/gcc-10
 RUN git clone https://github.com/grpc/grpc.git
 RUN cd grpc && ~/bin/bazel build :all
 # RUN cd grpc && ~/bin/bazel test --config=dbg //test/...
 
+# Configure, make, and install libpqxx
+RUN apt-get install -y --reinstall postgresql libpq-dev build-essential gcc-10 g++-10 pkg-config
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+RUN update-alternatives --config gcc && update-alternatives --config g++
+WORKDIR /repos
+RUN git clone https://github.com/jtv/libpqxx.git
+RUN cd libpqxx/ && ./configure CXXFLAGS="-std=c++17"
+#RUN cd libpqxx/ && sudo make
+#RUN cd libpqxx/ && sudo make install
+ENV PGHOST=localhost
+ENV PGPORT=5432
+
+RUN apt-get install -y --no-install-recommends tmux

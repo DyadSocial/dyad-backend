@@ -9,13 +9,22 @@ services:
       - ./.env.dev
     ports:
       - "5432:5432"
+      - "5442:5442"
 
   grpc:
     build:
       context: ./usercontent-servicer
-      dockerfile: Dockerfile-data
+      dockerfile: Dockerfile
+    volumes:
+      - ./usercontent-servicer/grpc-server:/etc/grpc-server
     env_file:
       - ./.env.dev
+    network_mode: "service:db"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+    command: tmux
       
   web:
     build: 
@@ -23,6 +32,7 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py wait_for_db &&
+             rm -rf /code/static &&
              python manage.py collectstatic && 
              uwsgi --ini dyad_uwsgi.ini"
     volumes:
