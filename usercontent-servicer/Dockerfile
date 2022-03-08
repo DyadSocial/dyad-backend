@@ -28,8 +28,8 @@ RUN make install && sudo ldconfig
 WORKDIR /repos
 ENV CC=/usr/bin/gcc-10
 RUN git clone https://github.com/grpc/grpc.git
+RUN apt install -y --no-install-recommends cmake
 RUN cd grpc && ~/bin/bazel build :all
-# RUN cd grpc && ~/bin/bazel test --config=dbg //test/...
 
 # Configure, make, and install libpqxx
 RUN apt-get install -y --reinstall postgresql libpq-dev build-essential gcc-10 g++-10 pkg-config
