@@ -10,26 +10,26 @@ RUN sudo update-ca-certificates
 RUN git config --global http.sslCAinfo /etc/ssl/certs/ca-certificates.crt
 
 # Install Bazel
-RUN wget https://github.com/bazelbuild/bazel/releases/download/5.0.0/bazel-5.0.0-installer-darwin-arm64.sh --no-check-certificate
-RUN chmod +x bazel-5.0.0-installer-darwin-arm64.sh && ./bazel-5.0.0-installer-darwin-arm64.sh --user
-ENV PATH="$PATH:$HOME/bin"
+#RUN wget https://github.com/bazelbuild/bazel/releases/download/5.0.0/bazel-5.0.0-installer-darwin-arm64.sh --no-check-certificate
+#RUN chmod +x bazel-5.0.0-installer-darwin-arm64.sh && ./bazel-5.0.0-installer-darwin-arm64.sh --user
+#ENV PATH="$PATH:$HOME/bin"
 
-WORKDIR /repos
+#WORKDIR /repos
 
 # Install protobufs
-RUN git clone https://github.com/protocolbuffers/protobuf.git && cd protobuf && git submodule update --init --recursive && ./autogen.sh
-ENV LD_LIBRARY_PATH='/usr'
-RUN cd protobuf && ./configure --prefix=/usr && make -j$(nproc)
-WORKDIR /repos/protobuf
+#RUN git clone https://github.com/protocolbuffers/protobuf.git && cd protobuf && git submodule update --init --recursive && ./autogen.sh
+#ENV LD_LIBRARY_PATH='/usr'
+#RUN cd protobuf && ./configure --prefix=/usr && make -j$(nproc)
+#WORKDIR /repos/protobuf
 # RUN make check
-RUN make install && sudo ldconfig
+#RUN make install && sudo ldconfig
 
 # Install gRPC
-WORKDIR /repos
-ENV CC=/usr/bin/gcc-10
-RUN git clone https://github.com/grpc/grpc.git
-RUN apt install -y --no-install-recommends cmake
-RUN cd grpc && ~/bin/bazel build :all
+#WORKDIR /repos
+#ENV CC=/usr/bin/gcc-10
+#RUN git clone https://github.com/grpc/grpc.git
+#RUN apt install -y --no-install-recommends cmake
+#RUN cd grpc && ~/bin/bazel build :all
 
 # Configure, make, and install libpqxx
 RUN apt-get install -y --reinstall postgresql libpq-dev build-essential gcc-10 g++-10 pkg-config
@@ -44,4 +44,8 @@ RUN cd libpqxx/ && ./configure CXXFLAGS="-std=c++17"
 ENV PGHOST=localhost
 ENV PGPORT=5432
 
-RUN apt-get install -y --no-install-recommends tmux
+RUN apt-get install -y --no-install-recommends tmux cmake
+
+COPY ./grpc-server /etc/grpc-server
+WORKDIR /etc/grpc-server
+RUN cmake . && make
