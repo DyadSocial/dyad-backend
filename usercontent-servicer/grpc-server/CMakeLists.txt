@@ -5,6 +5,9 @@ set (CMAKE_CXX_STANDARD 17)
 
 find_package(Threads REQUIRED)
 
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Make Sure GRPC dependency is available
 option(USE_SYSTEM_GRPC "Use System Install gRPC" ON)
 if(USE_SYSTEM_GRPC)
@@ -84,9 +87,8 @@ target_link_libraries(image_grpc_proto
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
 
-# For each for future executables if needed..
 foreach(_target
-  grpc_data_server)
+  grpc_data_server grpc_data_client)
   add_executable(${_target} "${_target}.cpp")
   target_link_libraries(${_target}
     image_grpc_proto
