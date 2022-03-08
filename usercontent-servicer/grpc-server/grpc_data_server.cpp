@@ -49,8 +49,8 @@ public:
                 auto sizePair = metadata.find("size");
                 if (sizePair != metadata.end()) {
                     std::stringstream size_str(sizePair->second.data());
-                    std::cout << "Init Size: " << size_str.str() << std::endl;
                     size_str >> image_size_;
+                    std::cout << "Allocating Size: " << image_size_ << std::endl;
                     image.resize(image_size_);
                 } else {
                     // Could not find a size to allocate to download image
@@ -67,14 +67,15 @@ public:
                         image[image_pos_++] = image_chunk_.imagedata()[i];
                     }
                     chunk_count_++;
+                    StartRead(&image_chunk_);
                 } else {
                     auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(
                         system_clock::now() - start_time_);
                     std::cout << "Chunk count: " << chunk_count_ << "\n";
-                    std::cout << "Time elapsed: " << elapsed_time.count()/1000 << "\n";
-                    //ack_->set_imagesize(image_size_);
-                    //ack_->set_success(true);
-                    //ack_->set_imageurl("https://dyadsocial.com");
+                    std::cout << "Time elapsed: " << elapsed_time.count() << "ms\n";
+                    ack_->set_imagesize(std::to_string(image_size_));
+                    ack_->set_success(true);
+                    ack_->set_imageurl("https://dyadsocial.com");
                     Finish(Status::OK);
                 }
             }
