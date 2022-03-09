@@ -6,6 +6,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <sstream>
 #include <sw/redis++/redis++.h>
 
 #include "posts.grpc.pb.h"
@@ -50,15 +51,17 @@ DatabaseHelper *DatabaseHelper::GetInstance(std::string address) {
 }
 
 std::string DatabaseHelper::StoreProfileImage(std::string username, std::string image) {
-  std::string key = "user:"+username+":profile_picture";
-  redis_.set(key, image);
-  std::cout << "Stored: " << redis_.get(key)->size() << std::endl;
-  return key;
+  std::stringstream keyStream;
+  keyStream << "user:" << username << ":profile_picture";
+  redis_.set(keyStream.str(), image);
+  std::cout << "Stored: " << redis_.get(keyStream.str())->size() << std::endl;
+  return keyStream.str();
 }
 
 std::string DatabaseHelper::GetProfileImage(std::string username) {
-  std::string key = "user:"+username+":profile_picture";
-  auto val = redis_.get(key);
+  std::stringstream keyStream;
+  keyStream << "user:" << username << ":profile_picture";
+  auto val = redis_.get(keyStream.str());
   if (val) {
     std::cout << "Found: " << *val << std::endl;
     return *val;
@@ -67,20 +70,17 @@ std::string DatabaseHelper::GetProfileImage(std::string username) {
 }
 
 std::string DatabaseHelper::StorePostImage(std::string username, std::string id, std::string image) {
-  printf("Database Addr: %p\n", this);
-  std::string key = "user:"+username+":post:"+id;
-  key = "user:jake:post:abc123";
-  std::cout << key << std::endl;
-  redis_.set(key, image);
-  return key;
+  std::stringstream keyStream;
+  keyStream << "user:" << username << ":post:" << id;
+  std::cout << keyStream.str() << std::endl;
+  redis_.set(keyStream.str(), image);
+  return keyStream.str();
 }
 
 std::string DatabaseHelper::GetPostImage(std::string username, std::string id) {
-  printf("Database Addr: %p\n", this);
-  std::cout << "Pulling user: " + username + ", post: " + id + "\n"; 
-  std::string key = "user:"+username+":post:"+id;
-  std::cout << key << std::endl;
-  auto val = redis_.get(key);
+  std::stringstream keyStream;
+  keyStream << "user:" << username << ":post:" << id;
+  auto val = redis_.get(keyStream.str());
   if (val) {
     std::cout << "Found" << std::endl;
     return *val;
