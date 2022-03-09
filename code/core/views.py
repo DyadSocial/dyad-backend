@@ -6,9 +6,15 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from rest_framework import generics
 
 
-from .serializers import DyadUserSerializer, DyadAuthSerializer
+from django_rest_passwordreset.models import ResetPasswordToken
+from django_rest_passwordreset.views import get_password_reset_token_expiry_time
+from django_rest_passwordreset.signals import reset_password_token_created
+
+from .serializers import DyadUserSerializer, DyadAuthSerializer, DyadResetPasswordSerializer
 import jwt, datetime
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
@@ -90,6 +96,60 @@ class LogoutView(APIView):
         }
 
         return response
+
+class PasswordResetTokenView(generics.UpdateAPIView):
+
+    """
+
+    Class for generating token for password resetting of 
+    a user account
+
+    """
+    
+    serializer_class = DyadResetPasswordSerializer
+    model = DyadUser
+    permission_class = ('IsAuthenticated')
+
+    def get_object(self, queryset = None):
+        token = self.request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+        
+        try:
+            payload = jwt.decode(token, 'secret', algorithms = ['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated, Cookie expired')
+        
+        user = User.objects.filter(id = payload['id']).first()
+
+        return user
+
+    def update(self, request):
+        user_object = self.get_object()
+        serialized_data = self.get_serializer(data = request.data)
+
+        # check if data is valid
+        # if so, check for old password
+        if serialized_data.is_valid():
+            if not user_object.check_password(serialized_data.data.get("old_password")):
+                response = {
+                    "user": f'{user_object.username}', #NOTICE: DELETE THIS DURING PRODUCTION
+                    "old_password": "Invalid",
+                    "notice": "NOTICE: the provided password is incorrect, please try again"
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        user_object.set_password(serialized_data.data.get("new_password"))
+        user_object.save()
+        
+        response = {
+            'status': 'success',
+            'code': status.HTTP_200_OK,
+            'message': 'Password updated successfully!',
+            'data': []
+        }
+
+        return Response(response)
 
 @api_view(['POST'])
 def API_Overview(request):

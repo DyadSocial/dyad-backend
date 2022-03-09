@@ -26,9 +26,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 SECRET_KEY = 'django-insecure-@1%7zt55@@$g@9@716j8%*gkfxoriqx+=g)_w5!vbp0$=xj^6s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["api.dyadsocial.com"]
+ALLOWED_HOSTS = ["api.dyadsocial.com", "localhost"]
 
 
 # Application definition
@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'core',
     'api',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'django_rest_passwordreset'
 ]
 
 
