@@ -42,14 +42,14 @@ RUN update-alternatives --config gcc && update-alternatives --config g++
 
 RUN apt-get install -y --no-install-recommends tmux cmake
 
-# Install grpc, protobufs, and all dependencies using CMakeLists.txt
-#COPY ./grpc-server /etc/grpc-server
-#WORKDIR /etc/grpc-server
-#RUN cmake .
-
 # Install redis
 WORKDIR /repos
 RUN git clone https://github.com/redis/hiredis.git
 RUN cd hiredis && make && make install
 RUN git clone https://github.com/sewenew/redis-plus-plus.git && cd redis-plus-plus && mkdir build && cd build && cmake -DREDIS_PLUS_PLUS_CXX_STANDARD=14 ..
 RUN cd redis-plus-plus/build && make && make install
+
+# Install grpc, protobufs, and all dependencies using CMakeLists.txt
+COPY ./grpc-server /etc/grpc-server
+WORKDIR /etc/grpc-server
+RUN cmake . && make
