@@ -28,3 +28,8 @@ class DyadAuthSerializer(serializers.ModelSerializer):
         model = DyadUser
         fields = ('username',
                     'password')
+
+class DyadResetPasswordSerializer(serializers.Serializer):
+    model = DyadUser
+    old_password = serializers.CharField(required = True)
+    new_password = serializers.CharField(required = True)
