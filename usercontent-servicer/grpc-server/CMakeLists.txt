@@ -46,23 +46,6 @@ add_custom_command(
     "${image_proto}"
     DEPENDS "${image_proto}")
 
-get_filename_component(content_proto "./protos/content.proto" ABSOLUTE)
-get_filename_component(content_proto_path "${content_proto}" PATH)
-# Generated Headers/Sources
-set(content_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/content.pb.cc")
-set(content_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/content.pb.h")
-set(content_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/content.grpc.pb.cc")
-set(content_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/content.grpc.pb.h")
-add_custom_command(
-  OUTPUT "${content_proto_srcs}" "${content_proto_hdrs}" "${content_grpc_srcs}" "${content_grpc_hdrs}"
-  COMMAND ${_PROTOBUF_PROTOC}
-  ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
-    --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
-    -I "${content_proto_path}"
-    --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
-    "${content_proto}"
-    DEPENDS "${content_proto}")
-
 get_filename_component(posts_proto "./protos/posts.proto" ABSOLUTE)
 get_filename_component(posts_proto_path "${posts_proto}" PATH)
 # Generated Headers/Sources
@@ -93,23 +76,12 @@ target_link_libraries(image_grpc_proto
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
 
-add_library(content_grpc_proto
-  ${content_proto_srcs}
-  ${content_proto_hdrs}
-  ${content_grpc_srcs}
-  ${content_grpc_hdrs})
-target_link_libraries(content_grpc_proto
-  ${_REFLECTION}
-  ${_GRPC_GRPCPP}
-  ${_PROTOBUF_LIBPROTOBUF})
-
 add_library(posts_grpc_proto
   ${posts_proto_srcs}
   ${posts_proto_hdrs}
   ${posts_grpc_srcs}
   ${posts_grpc_hdrs})
 target_link_libraries(posts_grpc_proto
-  content_grpc_proto
   ${_REFLECTION}
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
@@ -118,7 +90,6 @@ add_library(database_helper
   "database_helper.hpp")
 target_link_libraries(database_helper
   image_grpc_proto
-  content_grpc_proto
   posts_grpc_proto
   ${_REFLECTION}
   ${_GRPC_GRPCPP}
@@ -130,7 +101,6 @@ foreach(_target
   target_link_libraries(${_target}
     image_grpc_proto
     posts_grpc_proto
-    content_grpc_proto
     database_helper
     ${_REFLECTION}
     ${_GRPC_GRPCPP}

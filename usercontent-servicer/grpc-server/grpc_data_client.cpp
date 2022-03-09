@@ -37,14 +37,14 @@ std::vector<ImageChunk> makeImageChunks(size_t bytes) {
     ImageChunk chunk;
     if (bytes < CHUNK_SIZE) {
       for (int i = 0; i < bytes; i++) {
-        fake_data << '0';
+        fake_data << i % 10;
       }
       chunk.set_imagedata(fake_data.str());
       chunks[currentChunk] = chunk;
       bytes = 0;
     } else {
       for(int i = 0; i < CHUNK_SIZE; i++) {
-        fake_data << '0';
+        fake_data << i % 10;
       }
       chunk.set_imagedata(fake_data.str());
       chunks[currentChunk++] = chunk;
@@ -74,6 +74,8 @@ public:
     for (auto chunk : testData) {
       if (!writer->Write(chunk)) {
         break;
+      } else {
+        std::cout << "Sending " << chunk.imagedata() << std::endl;
       }
     }
     writer->WritesDone();
@@ -91,20 +93,7 @@ public:
 
 
 int main(int argc, char **argv) {
-  std::cout << "Test random chunk creation" << std::endl;
-  auto chunks = makeImageChunks(7);
-  std::cout << "Size: " << chunks.size() << " chunks\n";
-
-  
-  ImageChunk chunk = chunks[0];
-  std::cout << chunk.has_imagedata() << std::endl;
-  std::cout << "Chunk Data:\n";
-  for (int i = 0; i < chunk.imagedata().size(); i++) {
-    std::cout << chunk.imagedata()[i];
-  }
-  std::cout << "\n";
-
-  ImageClient client(grpc::CreateChannel("localhost:5442", grpc::InsecureChannelCredentials()));
+  ImageClient client(grpc::CreateChannel("127.0.0.1:5442", grpc::InsecureChannelCredentials()));
   client.UploadImage(std::stoi(argv[1]));
 
   return 0;

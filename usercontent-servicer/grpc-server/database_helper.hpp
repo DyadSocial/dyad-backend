@@ -18,11 +18,12 @@ private:
   static DatabaseHelper *dh_instance_;
   static std::mutex mutex_;
 protected:
-  Redis redis_ = Redis("tcp://127.0.0.1:6379");
-  DatabaseHelper() {
+  Redis redis_;
+  DatabaseHelper(std::string address) 
+    : redis_(Redis(address)) { 
   }
 public:
-  static DatabaseHelper *GetInstance();
+  static DatabaseHelper *GetInstance(std::string address);
   DatabaseHelper(DatabaseHelper &other) = delete;
   void operator=(const DatabaseHelper &) = delete;
 
@@ -40,10 +41,10 @@ public:
 DatabaseHelper *DatabaseHelper::dh_instance_{nullptr};
 std::mutex DatabaseHelper::mutex_;
 
-DatabaseHelper *DatabaseHelper::GetInstance() {
+DatabaseHelper *DatabaseHelper::GetInstance(std::string address) {
   std::lock_guard<std::mutex> lock(mutex_);
   if (dh_instance_ == nullptr) {
-    dh_instance_ = new DatabaseHelper();
+    dh_instance_ = new DatabaseHelper(address);
   }
   return dh_instance_;
 }
@@ -51,12 +52,13 @@ DatabaseHelper *DatabaseHelper::GetInstance() {
 std::string DatabaseHelper::StoreProfileImage(std::string username, std::string image) {
   std::string key = "user:"+username+":profile_picture";
   redis_.set(key, image);
-  std::cout << "Stored: " << *redis_.get(key) << std::endl;
+  std::cout << "Stored: " << redis_.get(key)->size() << std::endl;
   return key;
 }
 
 std::string DatabaseHelper::GetProfileImage(std::string username) {
-  auto val = redis_.get("user:"+username+":profile_picture");
+  std::string key = "user:"+username+":profile_picture";
+  auto val = redis_.get(key);
   if (val) {
     std::cout << "Found: " << *val << std::endl;
     return *val;
@@ -65,17 +67,25 @@ std::string DatabaseHelper::GetProfileImage(std::string username) {
 }
 
 std::string DatabaseHelper::StorePostImage(std::string username, std::string id, std::string image) {
+  printf("Database Addr: %p\n", this);
   std::string key = "user:"+username+":post:"+id;
-  std::cout << "Stored: " << *redis_.get(key) << std::endl;
+  key = "user:jake:post:abc123";
+  std::cout << key << std::endl;
   redis_.set(key, image);
   return key;
 }
 
 std::string DatabaseHelper::GetPostImage(std::string username, std::string id) {
-  auto val = redis_.get("user:"+username+":post:"+id);
+  printf("Database Addr: %p\n", this);
+  std::cout << "Pulling user: " + username + ", post: " + id + "\n"; 
+  std::string key = "user:"+username+":post:"+id;
+  std::cout << key << std::endl;
+  auto val = redis_.get(key);
   if (val) {
+    std::cout << "Found" << std::endl;
     return *val;
   }
+  std::cout << "Not Found" << std::endl;
   return "NIL";
 }
 
