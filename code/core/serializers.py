@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DyadUser
+from .models import DyadUser, DyadProfile
 # class UserSerializer(serializers.Serializer):
 #     username = serializers.Ch
     
@@ -23,6 +23,12 @@ class DyadUserSerializer(serializers.ModelSerializer):
         fields = ('username',
                     'password')
 
+class DyadProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DyadProfile
+        fields = '__all__'
+
 class DyadAuthSerializer(serializers.ModelSerializer):
     class Meta:
         model = DyadUser
@@ -33,3 +39,14 @@ class DyadResetPasswordSerializer(serializers.Serializer):
     model = DyadUser
     old_password = serializers.CharField(required = True)
     new_password = serializers.CharField(required = True)
+
+class DyadNewProfileSerializer(serializers.Serializer):
+    model = DyadProfile
+    display_name = serializers.CharField(required = True)
+    profile_description = serializers.CharField(required = True)
+
+class DyadUpdateProfileSerializer(serializers.Serializer):
+    model = DyadProfile
+    password = serializers.CharField(required = True)
+    new_description = serializers.CharField(required = False)
+    new_display_name = serializers.CharField(required = False)

@@ -14,12 +14,13 @@ from django_rest_passwordreset.models import ResetPasswordToken
 from django_rest_passwordreset.views import get_password_reset_token_expiry_time
 from django_rest_passwordreset.signals import reset_password_token_created
 
-from .serializers import DyadUserSerializer, DyadAuthSerializer, DyadResetPasswordSerializer
+from .serializers import DyadUserSerializer, DyadAuthSerializer, DyadResetPasswordSerializer, DyadNewProfileSerializer, DyadUpdateProfileSerializer, DyadProfileSerializer
+from django.core import serializers as serial
 import jwt, datetime
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
 
-from .models import DyadUser
+from .models import DyadUser, DyadProfile
 
 class RegisterView(APIView):
     
@@ -97,6 +98,142 @@ class LogoutView(APIView):
 
         return response
 
+class CreateDyadProfileView(generics.CreateAPIView):
+
+
+    """
+    End point to create a new dyad profile object.
+    This endpoint should only ever be called one time per newly created user
+    """
+
+    serializer_class = DyadNewProfileSerializer
+    model = DyadUser
+    permission_class = ('IsAuthenticated')
+
+    def get_object(self, queryset = None):
+        token = self.request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+        
+        try:
+            payload = jwt.decode(token, 'secret', algorithms = ['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated, Cookie expired')
+        
+        user = User.objects.filter(id = payload['id']).first()
+
+        return user
+
+    def post(self,request):
+        userobj = self.get_object()
+        Dyaduser = DyadUser.objects.get(username=userobj.username)
+
+        serialized_data = self.get_serializer(data = request.data)
+        
+        if serialized_data.is_valid():
+            new_profile = DyadProfile(Profile = Dyaduser, 
+                                        Profile_Description = serialized_data.data.get('profile_description'),
+                                        Display_name = serialized_data.data.get('display_name')
+                                        )
+            new_profile.save()
+        else:
+            return Response({"message":"Data provided isn't valid serializer data, please try again"}, status=status.HTTP_400_BAD_REQUEST)        
+
+        response = {
+            'status': 'success',
+            'code': status.HTTP_200_OK,
+            'message': 'Your Dyad profile has been successfully created',
+            'data': []
+        }
+
+        return Response(response)
+
+class GetDyadProfileView(generics.ListAPIView):
+
+    serializer_class = DyadProfileSerializer
+    model = DyadUser
+    permission_class = ('IsAuthenticated')
+
+    def get_object(self, queryset = None):
+        token = self.request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+        
+        try:
+            payload = jwt.decode(token, 'secret', algorithms = ['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated, Cookie expired')
+        
+        user = User.objects.filter(id = payload['id']).first()
+
+        return user
+    
+    def get(self, request):
+        userobj = self.get_object()
+        Dyaduser = DyadUser.objects.get(username=userobj.username)
+
+        
+        Update_Dyad_Profile = DyadProfile.objects.get(Profile = Dyaduser)
+
+        serialized_data = DyadProfileSerializer(Update_Dyad_Profile)
+
+        return Response(serialized_data.data)
+
+class UpdateDyadProfileView(generics.UpdateAPIView):
+    
+    serializer_class = DyadUpdateProfileSerializer
+    model = DyadUser
+    permission_class = ('IsAuthenticated')
+
+    def get_object(self, queryset = None):
+        token = self.request.COOKIES.get('jwt')
+
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+        
+        try:
+            payload = jwt.decode(token, 'secret', algorithms = ['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated, Cookie expired')
+        
+        user = User.objects.filter(id = payload['id']).first()
+
+        return user
+    
+    def update(self, request):
+        userobj = self.get_object()
+        Dyaduser = DyadUser.objects.get(username=userobj.username)
+
+        serialized_data = self.get_serializer(data = request.data)
+
+        if serialized_data.is_valid():
+            if not userobj.check_password(serialized_data.data.get("password")):
+                response = {
+                    "user": f'{user_object.username}', #NOTICE: DELETE THIS DURING PRODUCTION
+                    "old_password": "Invalid",
+                    "notice": "NOTICE: the provided password is incorrect, please try again"
+                }
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"Data provided isn't valid serializer data, please try again"}, status=status.HTTP_400_BAD_REQUEST)          
+
+        Update_Dyad_Profile = DyadProfile.objects.get(Profile = Dyaduser)
+
+        Update_Dyad_Profile.Profile_Description = serialized_data.data.get("new_description")
+        Update_Dyad_Profile.Display_name = serialized_data.data.get("new_display_name")
+        Update_Dyad_Profile.save()
+    
+        response = {
+            'status': 'success',
+            'code': status.HTTP_200_OK,
+            'message': 'Dyad Profile Successfully Updated!',
+            'data': []
+        }
+
+        return Response(response)
+          
 class PasswordResetTokenView(generics.UpdateAPIView):
 
     """
@@ -139,6 +276,8 @@ class PasswordResetTokenView(generics.UpdateAPIView):
                     "notice": "NOTICE: the provided password is incorrect, please try again"
                 }
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"Data provided isn't valid serializer data, please try again"}, status=status.HTTP_400_BAD_REQUEST)
         user_object.set_password(serialized_data.data.get("new_password"))
         user_object.save()
         
@@ -150,6 +289,8 @@ class PasswordResetTokenView(generics.UpdateAPIView):
         }
 
         return Response(response)
+
+
 
 @api_view(['POST'])
 def API_Overview(request):
