@@ -72,7 +72,7 @@ class LoginView(APIView):
 class UserView(APIView):
 
     def get(self,request):
-        token = request.COOKIES.get('jwt')
+        token = request.headers.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -111,7 +111,7 @@ class CreateDyadProfileView(generics.CreateAPIView):
     permission_class = ('IsAuthenticated')
 
     def get_object(self, queryset = None):
-        token = self.request.COOKIES.get('jwt')
+        token = self.request.headers.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -129,7 +129,7 @@ class CreateDyadProfileView(generics.CreateAPIView):
         userobj = self.get_object()
         Dyaduser = DyadUser.objects.get(username=userobj.username)
 
-        serialized_data = self.get_serializer(data = request.data)
+        serialized_data = DyadNewProfileSerializer(data = request.data)
         
         if serialized_data.is_valid():
             new_profile = DyadProfile(Profile = Dyaduser, 
@@ -156,7 +156,7 @@ class GetDyadProfileView(generics.ListAPIView):
     permission_class = ('IsAuthenticated')
 
     def get_object(self, queryset = None):
-        token = self.request.COOKIES.get('jwt')
+        token = self.request.headers.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -188,7 +188,7 @@ class UpdateDyadProfileView(generics.UpdateAPIView):
     permission_class = ('IsAuthenticated')
 
     def get_object(self, queryset = None):
-        token = self.request.COOKIES.get('jwt')
+        token = self.request.headers.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -244,7 +244,7 @@ class PasswordResetTokenView(generics.UpdateAPIView):
     permission_class = ('IsAuthenticated')
 
     def get_object(self, queryset = None):
-        token = self.request.COOKIES.get('jwt')
+        token = self.request.headers.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
