@@ -209,13 +209,7 @@ class UpdateDyadProfileView(generics.UpdateAPIView):
         serialized_data = self.get_serializer(data = request.data)
 
         if serialized_data.is_valid():
-            if not userobj.check_password(serialized_data.data.get("password")):
-                response = {
-                    "user": f'{user_object.username}', #NOTICE: DELETE THIS DURING PRODUCTION
-                    "old_password": "Invalid",
-                    "notice": "NOTICE: the provided password is incorrect, please try again"
-                }
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            pass
         else:
             return Response({"message":"Data provided isn't valid serializer data, please try again"}, status=status.HTTP_400_BAD_REQUEST)          
 
