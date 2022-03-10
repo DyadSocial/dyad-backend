@@ -23,7 +23,9 @@ services:
     tty: true
     depends_on:
       - redis
-    command: tmux
+        #    command: sh -c "cd /etc/grpc-server/ && cmake . && make && sh -c 'while ./grpc_data_server; do echo Restarting GRPC Server; done'"
+    command:
+      - tmux
       
   web:
     build: 
