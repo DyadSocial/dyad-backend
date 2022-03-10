@@ -215,8 +215,10 @@ class UpdateDyadProfileView(generics.UpdateAPIView):
 
         Update_Dyad_Profile = DyadProfile.objects.get(Profile = Dyaduser)
 
-        Update_Dyad_Profile.Profile_Description = serialized_data.data.get("new_description")
-        Update_Dyad_Profile.Display_name = serialized_data.data.get("new_display_name")
+        if serialized_data.data.get("new_description"):
+            Update_Dyad_Profile.Profile_Description = serialized_data.data.get("new_description")
+        if serialized_data.data.get("new_display_name"):
+            Update_Dyad_Profile.Display_name = serialized_data.data.get("new_display_name")
         Update_Dyad_Profile.save()
     
         response = {
