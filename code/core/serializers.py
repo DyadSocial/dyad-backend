@@ -47,6 +47,5 @@ class DyadNewProfileSerializer(serializers.Serializer):
 
 class DyadUpdateProfileSerializer(serializers.Serializer):
     model = DyadProfile
-    password = serializers.CharField(required = True)
     new_description = serializers.CharField(required = False)
     new_display_name = serializers.CharField(required = False)
