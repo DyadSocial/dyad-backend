@@ -48,6 +48,7 @@ RUN git clone https://github.com/redis/hiredis.git
 RUN cd hiredis && make && make install
 RUN git clone https://github.com/sewenew/redis-plus-plus.git && cd redis-plus-plus && mkdir build && cd build && cmake -DREDIS_PLUS_PLUS_CXX_STANDARD=14 ..
 RUN cd redis-plus-plus/build && make && make install
+RUN ldconfig
 
 # Install grpc, protobufs, and all dependencies using CMakeLists.txt
 COPY ./grpc-server /etc/grpc-server

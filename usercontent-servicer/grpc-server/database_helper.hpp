@@ -54,7 +54,6 @@ std::string DatabaseHelper::StoreProfileImage(std::string username, std::string 
   std::stringstream keyStream;
   keyStream << "user:" << username << ":profile_picture";
   redis_.set(keyStream.str(), image);
-  std::cout << "Stored: " << redis_.get(keyStream.str())->size() << std::endl;
   return keyStream.str();
 }
 
@@ -63,16 +62,15 @@ std::string DatabaseHelper::GetProfileImage(std::string username) {
   keyStream << "user:" << username << ":profile_picture";
   auto val = redis_.get(keyStream.str());
   if (val) {
-    std::cout << "Found: " << *val << std::endl;
     return *val;
   }
-  return "NIL";
+  return "NULL";
 }
 
 std::string DatabaseHelper::StorePostImage(std::string username, std::string id, std::string image) {
   std::stringstream keyStream;
   keyStream << "user:" << username << ":post:" << id;
-  std::cout << keyStream.str() << std::endl;
+  std::cout << "-Store: " << keyStream.str() << std::endl;
   redis_.set(keyStream.str(), image);
   return keyStream.str();
 }
@@ -80,13 +78,12 @@ std::string DatabaseHelper::StorePostImage(std::string username, std::string id,
 std::string DatabaseHelper::GetPostImage(std::string username, std::string id) {
   std::stringstream keyStream;
   keyStream << "user:" << username << ":post:" << id;
+  std::cout << "-Get: " << keyStream.str() << std::endl;
   auto val = redis_.get(keyStream.str());
   if (val) {
-    std::cout << "Found" << std::endl;
     return *val;
   }
-  std::cout << "Not Found" << std::endl;
-  return "NIL";
+  return "NULL";
 }
 
 
