@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.urls import path, include
 from core import views
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView, TokenVerifyView)
+# from dyadchat.views import index
 
 urlpatterns = [
     #url(r'^core/users$', views.user_list),
@@ -21,5 +22,6 @@ urlpatterns = [
     path(r'^password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('profile/create-user-profile', views.CreateDyadProfileView.as_view()),
     path('profile/update-user-profile', views.UpdateDyadProfileView.as_view()),
-    path('profile/get-user-profile', views.GetDyadProfileView.as_view())
+    path('profile/get-user-profile', views.GetDyadProfileView.as_view()),
+    # path('admin/', admin.site.urls),
 ]
