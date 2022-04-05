@@ -29,6 +29,11 @@ class PostsSyncStub(object):
                 request_serializer=posts__pb2.Post.SerializeToString,
                 response_deserializer=posts__pb2.PostUploadAck.FromString,
                 )
+        self.deletePost = channel.unary_unary(
+                '/PostsSync/deletePost',
+                request_serializer=posts__pb2.PostQuery.SerializeToString,
+                response_deserializer=posts__pb2.PostUploadAck.FromString,
+                )
 
 
 class PostsSyncServicer(object):
@@ -52,6 +57,12 @@ class PostsSyncServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def deletePost(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PostsSyncServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -68,6 +79,11 @@ def add_PostsSyncServicer_to_server(servicer, server):
             'uploadPosts': grpc.stream_unary_rpc_method_handler(
                     servicer.uploadPosts,
                     request_deserializer=posts__pb2.Post.FromString,
+                    response_serializer=posts__pb2.PostUploadAck.SerializeToString,
+            ),
+            'deletePost': grpc.unary_unary_rpc_method_handler(
+                    servicer.deletePost,
+                    request_deserializer=posts__pb2.PostQuery.FromString,
                     response_serializer=posts__pb2.PostUploadAck.SerializeToString,
             ),
     }
@@ -127,6 +143,23 @@ class PostsSync(object):
             metadata=None):
         return grpc.experimental.stream_unary(request_iterator, target, '/PostsSync/uploadPosts',
             posts__pb2.Post.SerializeToString,
+            posts__pb2.PostUploadAck.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def deletePost(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/PostsSync/deletePost',
+            posts__pb2.PostQuery.SerializeToString,
             posts__pb2.PostUploadAck.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

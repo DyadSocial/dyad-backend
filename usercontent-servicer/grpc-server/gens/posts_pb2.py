@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bposts.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb0\x01\n\x04Post\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x30\n\x0clast_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63reated\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05title\x18\x06 \x01(\t\x12\r\n\x05group\x18\x07 \x01(\t\"4\n\tPostQuery\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0b\n\x03gid\x18\x06 \x01(\t\"K\n\rPostUploadAck\x12\n\n\x02id\x18\x01 \x01(\x05\x12.\n\nsaved_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"&\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04hwid\x18\x02 \x01(\t2{\n\tPostsSync\x12#\n\x0crefreshPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12!\n\nqueryPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12&\n\x0buploadPosts\x12\x05.Post\x1a\x0e.PostUploadAck(\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bposts.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb0\x01\n\x04Post\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x30\n\x0clast_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63reated\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05title\x18\x06 \x01(\t\x12\r\n\x05group\x18\x07 \x01(\t\"4\n\tPostQuery\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0b\n\x03gid\x18\x06 \x01(\t\"K\n\rPostUploadAck\x12\n\n\x02id\x18\x01 \x01(\x05\x12.\n\nsaved_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"&\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04hwid\x18\x02 \x01(\t2\xa5\x01\n\tPostsSync\x12#\n\x0crefreshPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12!\n\nqueryPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12&\n\x0buploadPosts\x12\x05.Post\x1a\x0e.PostUploadAck(\x01\x12(\n\ndeletePost\x12\n.PostQuery\x1a\x0e.PostUploadAckb\x06proto3')
 
 
 
@@ -63,6 +63,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _POSTUPLOADACK._serialized_end=356
   _USER._serialized_start=358
   _USER._serialized_end=396
-  _POSTSSYNC._serialized_start=398
-  _POSTSSYNC._serialized_end=521
+  _POSTSSYNC._serialized_start=399
+  _POSTSSYNC._serialized_end=564
 # @@protoc_insertion_point(module_scope)

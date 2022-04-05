@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
 message Post {
-    string id = 1;
+    int32 id = 1;
     string author = 2;
     string content = 3;
     google.protobuf.Timestamp last_updated = 4;
@@ -14,7 +14,7 @@ message Post {
 
 
 message PostQuery {
-    string id = 1;
+    int32 id = 1;
     string author = 2;
     string gid = 6;
 }
@@ -33,4 +33,5 @@ service PostsSync {
     rpc refreshPosts(PostQuery) returns (stream Post);
     rpc queryPosts(PostQuery) returns (stream Post);
     rpc uploadPosts(stream Post) returns (PostUploadAck);
+    rpc deletePost(PostQuery) returns (PostUploadAck);
 }
