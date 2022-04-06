@@ -79,10 +79,6 @@ class PostSync(posts_grpc.PostsSyncServicer):
         time.GetCurrentTime()
         return posts.PostUploadAck(id=200, saved_time=time)
 
-
-
-
-
 async def serve() -> None:
     server = grpc.aio.server()
     posts_grpc.add_PostsSyncServicer_to_server(PostSync(), server)
