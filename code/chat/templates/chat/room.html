@@ -1,4 +1,5 @@
 <!-- chat/templates/chat/room.html -->
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,27 +10,37 @@
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
+    
+    <script src="{% static 'reconnecting-websocket.js' %}"></script>   
+    
     {{ room_name|json_script:"room-name" }}
+   
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
+
+        // This code here is the main beef, it's the websockets and what connects the script to the chatroom
         const chatSocket = new WebSocket(
             'ws://'
-            + window.location.host
+            + window.location.host // <--- returns location and port of URL: in this testing case, localhost:8000
             + '/ws/chat/'
             + roomName
             + '/'
         );
 
+
+        // This function is what displays messages if the websocket returns any
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             document.querySelector('#chat-log').value += (data.message + '\n');
         };
 
+        // just display an error in the developer console if the chat is closed
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
+        // This code is the input bar where you type your message
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
             if (e.keyCode === 13) {  // enter, return
@@ -37,12 +48,14 @@
             }
         };
 
+        // This  is where the message goes after the submit button is clicked
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
+            // Here we have our json websocket send out the new message
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'command':'fetch_messages'
+                'command':'new_message',
             }));
             messageInputDom.value = '';
         };
