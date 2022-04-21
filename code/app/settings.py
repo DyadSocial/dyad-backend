@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'widget_tweaks',
     'core',
+    'images',
     'api',
     'rest_framework',
     # 'corsheaders',
@@ -169,5 +170,6 @@ if not os.path.exists(IMAGES_DIR):
 #     )
 # }
 
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+DATA_UPLOAD_MAX_MEMOROY_SIZE = 25000000
