@@ -23,12 +23,14 @@ class Message(models.Model):
         return self.author.username
 
 class Chat(models.Model):
+    chatid = models.CharField(max_length=25)
     participants = models.ManyToManyField(
         User, related_name='chats', blank=True)
     messages = models.ManyToManyField(Message, blank=True)
 
+
     def last_10_messages(self):
-        return Message.objects.order_by('-timestap').all()[:30]
+        return messages.order_by('-timestap').all()[:10]
 
     def __str__(self):
         return "{}".format(self.pk)

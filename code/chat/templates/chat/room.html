@@ -10,6 +10,7 @@
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
+    <input id="chat-message-fetch" type="button" value="fetch latest messages">
     
     <script src="{% static 'reconnecting-websocket.js' %}"></script>   
     
@@ -17,7 +18,7 @@
    
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
+        const username = "test123"
 
         // This code here is the main beef, it's the websockets and what connects the script to the chatroom
         const chatSocket = new WebSocket(
@@ -32,7 +33,12 @@
         // This function is what displays messages if the websocket returns any
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
+            // console.log(data)
+            for (var i = 0; i <= 10; i++) { 
+                console.log(data.message[i].content);
+                document.querySelector('#chat-log').value += (data.message[i].content + '\n');
+            }
+            // document.querySelector('#chat-log').value += (data.message + '\n');
         };
 
         // just display an error in the developer console if the chat is closed
@@ -48,6 +54,18 @@
             }
         };
 
+        // document.querySelector('#chat-message-input').onkeyup = function(e) {
+        //     if (e.keyCode === 13) {  // enter, return
+        //         document.querySelector('#chat-message-fetch').click();
+        //     }
+        // };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-fetch').click();
+            }
+        };
         // This  is where the message goes after the submit button is clicked
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
@@ -56,9 +74,39 @@
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'command':'new_message',
+                'roomname': roomName,
+                'username': username 
             }));
             messageInputDom.value = '';
         };
+
+        document.querySelector('#chat-message-fetch').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'command':'fetch_messages',
+                'roomname': roomName,
+                'username': username 
+            }));
+            messageInputDom.value = '';
+        };
+
+        // document.querySelector('#chat-message-fetch').onclick = function(e) {
+        //     const messageInputDom = document.querySelector('#chat-message-input');
+        //     // const message = messageInputDom.value;
+        //     // Here we have our json websocket send out the new message
+        //     chatSocket.send(JSON.stringify({
+        //         'message': message,
+        //         'command':'fetch_messages',
+        //         'roomname': roomName,
+        //         'username': username 
+
+        //     }));
+        //     messageInputDom.value = '';
+        // };
+
     </script>
 </body>
 </html>
