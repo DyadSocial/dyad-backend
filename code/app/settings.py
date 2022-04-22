@@ -29,16 +29,17 @@ SECRET_KEY = 'django-insecure-@1%7zt55@@$g@9@716j8%*gkfxoriqx+=g)_w5!vbp0$=xj^6s
 DEBUG = True
 
 
-if DEBUG:
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static')
-    ]
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+# if DEBUG:
+#     STATICFILES_DIRS = [
+#         os.path.join(BASE_DIR, 'static')
+#     ]
+# else:
+#     STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 ALLOWED_HOSTS = ["api.dyadsocial.com", "localhost"]
 
-
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 # Application definition
 
 INSTALLED_APPS = [
@@ -151,7 +152,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, 'static')
 #     #BASE_DIR / "static"

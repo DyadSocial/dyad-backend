@@ -48,6 +48,7 @@ class ChatConsumer(WebsocketConsumer):
     
     def message_to_json(self,message):
         return {
+            'id': message.message_id,
             'author': message.author.username,
             'content': message.content,
             'timestamp': str(message.timestamp)
@@ -82,13 +83,16 @@ class ChatConsumer(WebsocketConsumer):
         data = json.loads(text_data)
 
 
-        chatlog = Chat.objects.filter(chatid = data['roomname'])[0]
-        print(f'room id {chatlog.chatid}')
-        if not chatlog:
+        chatlog = Chat.objects.filter(chatid = data['roomname'])
+        #print(f'room id {chatlog.chatid}')
+        if chatlog:
+            chatlog = chatlog[0]
+        else:
             new_chatlog = Chat.objects.create(chatid = data['roomname'])
             first_person = get_user_object(data['username'])
             new_chatlog.participants.add(first_person)
             new_chatlog.save()
+            chatlog = new_chatlog
             print('finished making chatlog object')
         
 
@@ -125,7 +129,6 @@ class ChatConsumer(WebsocketConsumer):
     def send_message(self, message):
 
         message_list = list()
-
         for i in message['messages']:
             message_list.append(i)
         print(message_list)
