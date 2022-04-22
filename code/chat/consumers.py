@@ -123,9 +123,9 @@ class ChatConsumer(WebsocketConsumer):
         print("msg sent")
 
     def send_message(self, message):
-        # json_dict = json.dumps(message)
+
         message_list = list()
-        # print(message)
+
         for i in message['messages']:
             message_list.append(i)
         print(message_list)
