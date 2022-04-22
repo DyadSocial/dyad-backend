@@ -57,6 +57,7 @@ def get_chat_object(chatid):
 
 def check_if_in_chatlog(username, chatlog):
     user = get_user_object(username)
+    print(f'empttyyyyyyyyyyyyyyyyyyyyyyy {chatlog}')
     if user in chatlog.participants.all():
         print('the is already part of this chat')
     else:
