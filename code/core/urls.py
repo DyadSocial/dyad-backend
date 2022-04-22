@@ -23,6 +23,6 @@ urlpatterns = [
     path('profile/create-user-profile', views.CreateDyadProfileView.as_view()),
     path('profile/update-user-profile', views.UpdateDyadProfileView.as_view()),
     path('profile/get-user-profile', views.GetDyadProfileView.as_view()),
-    path('chat/', include('urls'))
+#    path('chat/', include('urls'))
     # path('admin/', admin.site.urls),
 ]
