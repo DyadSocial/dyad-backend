@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from chat.models import Chat,Message
+from core.models import DyadUser
 # class UserSerializer(serializers.Serializer):
 #     username = serializers.Ch
     
@@ -28,6 +29,16 @@ class MessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DyadUser
+        fields = ('username',)
+
+# class ChatSerializers(serializers.Serializer):
+
+    
 
     # def create(self, validated_data):
     #     participants = validated_data.pop('participants')
