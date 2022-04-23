@@ -22,8 +22,8 @@ class ChatConsumer(WebsocketConsumer):
 
         #make a new message object
         author_user = DyadUser.objects.filter(username = data['username'])[0]
-        auther_name = DyadUser.username
-        message = Message.objects.create(author=author_user,
+        author_name = author_user.username
+        message = Message.objects.create(author_id=author_user, author_name=author_name,
                             content = data['message'])
 
         #attach that message object to the associated chatroom
@@ -48,8 +48,8 @@ class ChatConsumer(WebsocketConsumer):
     
     def message_to_json(self,message):
         return {
-            'id': message.message_id,
-            'author': message.author.username,
+            'message_id': message.message_id,
+            'author': message.author_id.username,
             'content': message.content,
             'timestamp': str(message.timestamp)
         }
@@ -116,12 +116,15 @@ class ChatConsumer(WebsocketConsumer):
     def send_chat_message(self, content):
         # message = data['message']
         # Send message to room group
-        final_msg_string = f'({content["message"]["timestamp"]}) - {content["message"]["author"]}: {content["message"]["content"]} '
+#        final_msg_string = f'({content["message"]["timestamp"]}) - {content["message"]["author"]}: {content["message"]["content"]} '
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': final_msg_string
+                'message': content["message"]["content"],
+                'author': content["message"]["author"],
+                'timestamp': content["message"]["timestamp"],
+                'message_id': content["message"]["message_id"]
             }
         )
         print("msg sent")
@@ -144,5 +147,8 @@ class ChatConsumer(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
-            'message':message
+            'message':message,
+            'author':event["author"],
+			'timestamp':event["timestamp"],
+            'message_id':event["message_id"]
         }))

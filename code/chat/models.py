@@ -16,12 +16,13 @@ User = DyadUser()
 
 class Message(models.Model):
     message_id = models.AutoField(primary_key = True)
-    author = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    author_id = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    author_name = models.TextField()
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.author.username
+        return self.author_id.username
 
 class Chat(models.Model):
     chatid = models.CharField(max_length=25)
