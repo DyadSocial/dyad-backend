@@ -10,39 +10,52 @@ from rest_framework.generics import (
 from rest_framework.views import APIView
 from chat.models import Chat, Message
 from chat.views import get_last_10_messages
-from .serializers import ChatSerializer, GetMessagesSerializer, MessagesSerializer
+from .serializers import ChatSerializer, GetMessagesSerializer, MessagesSerializer, UserSerializer
 from core.models import DyadUser
 from rest_framework.response import Response
 
 class ChatDetailView(APIView):
 
-    def Chats_to_json(self, Chat):
+    def Chats_to_json(self, Chat_object):
         result = []
-        for chat in Chat:
+        print(f'fffff {Chat_object}')
+        for chat in Chat_object:
             result.append(self.Chat_to_json(chat))
         return result
     
-    def Chat_to_json(self, Chat):
+    def Chat_to_json(self, Chat_object):
+        
+        participants = Chat_object.participants.all()
+        
+        participant_list_strings = list()
+        for i in participants:
+                participant_list_strings.append(i.username)
+        
+        print(participant_list_strings)
         return {
-            'chatid': Chat.chatid,
-            'participants': list(Chat.participants.all()),
+            'chatid': Chat_object.chatid,
+            'participants': participant_list_strings,
             # 'messages': list(Chat.)
         }
 
     def post(self,request):
-        serialized_data = ChatSerializer(data = request.data)
-        # queryset = Chat.objects
-        # serializer_class = ChatSerializer
+        # serialized_data = ChatSerializer(data = request.data)
+        # # queryset = Chat.objects
+        # # serializer_class = ChatSerializer
 
-        if serialized_data.is_valid():
-            username = serialized_data.data.get('username')
+        # if serialized_data.is_valid():
+        #     username = serialized_data.data.get('username')
 
 #list of objects with the related participant
-        Chat_objects = list(Chat.objects.filter(participants = username))
+        username = request.data["username"]
 
-        chat_object_list = Chats_to_json(Chat_objects)
-
+        Chat_objects = list(Chat.objects.filter(participants__username__startswith = username))
+        chat_object_list = self.Chats_to_json(Chat_objects)
         print(chat_object_list)
+
+
+        return Response(chat_object_list)
+        
 
 
 class ChatGetMessagesView(APIView):
