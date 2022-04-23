@@ -31,7 +31,7 @@ class ChatDetailView(APIView):
         for i in participants:
                 participant_list_strings.append(i.username)
         
-        print(participant_list_strings)
+        participant_list_strings.sort()
         return {
             'chatid': Chat_object.chatid,
             'participants': participant_list_strings,
