@@ -4,7 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from .models import Message, Chat 
 from core.models import DyadUser
 from asgiref.sync import async_to_sync
-from .views import get_last_10_messages, get_user_object, check_if_in_chatlog, get_chat_object, get_last_10_messages
+from .views import get_last_10_messages, get_user_object, check_if_in_chatlog, get_chat_object, get_last_10_messages, make_new_chatlog
 
 class ChatConsumer(WebsocketConsumer):
 
@@ -88,10 +88,7 @@ class ChatConsumer(WebsocketConsumer):
         if chatlog:
             chatlog = chatlog[0]
         else:
-            new_chatlog = Chat.objects.create(chatid = data['roomname'])
-            first_person = get_user_object(data['username'])
-            new_chatlog.participants.add(first_person)
-            new_chatlog.save()
+            new_chatlog = make_new_chatlog(data['roomname'], data['recipients'])
             chatlog = new_chatlog
             print('finished making chatlog object')
         

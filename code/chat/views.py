@@ -69,6 +69,23 @@ def get_last_10_messages(chatId):
     chat = get_object_or_404(Chat, chatid = chatId)
     return chat.messages.order_by('-timestamp').all()[:10]
 
+def make_new_chatlog(chatId, recipients):
+
+    recipient_list = []
+
+    for users in recipients:
+        recipient_list.append(get_user_object(users))
+    
+    #create brand new chatlog
+    new_chatlog = Chat.objects.create(chatid = data['roomname'])
+    
+    #add the 2 recipients to the chatlog, both users MUST EXIST already
+    for add_users in recipient_list:
+        new_chatlog.participants.add(add_users)
+        new_chatlog.save()
+    
+    return new_chatlog
+
 
 
 
