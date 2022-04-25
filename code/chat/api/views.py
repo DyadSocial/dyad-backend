@@ -13,6 +13,8 @@ from chat.views import get_last_10_messages
 from .serializers import ChatSerializer, GetMessagesSerializer, MessagesSerializer, UserSerializer
 from core.models import DyadUser
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import status
 
 class ChatDetailView(APIView):
 
@@ -83,6 +85,22 @@ class ChatGetMessagesView(APIView):
 
 
         return Response(return_serialized_data.data)
+
+class CheckUserExistView(APIView):
+
+    def post(self,request):
+
+        try:
+            DyadUser.objects.filter(username = request["username"])
+            return Response({
+                "status": status.HTTP_200_OK,
+                "Message": "The requested user does exist in the database"
+            })
+        except ObjectDoesNotExist:
+            return Response({
+                "status": status.HTTP_404_OK,
+                "Message":"The requested user does not exist!"
+            })
 
 
         # for i in Chat_objects:
