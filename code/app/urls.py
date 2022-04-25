@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/', include("core.urls")),
     path('chat/', include("chat.urls")),
-    path('images/', include("images.urls"))
+#    path('images/', include("images.urls"))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
