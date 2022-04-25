@@ -28,22 +28,12 @@ SECRET_KEY = 'django-insecure-@1%7zt55@@$g@9@716j8%*gkfxoriqx+=g)_w5!vbp0$=xj^6s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-<<<<<<< HEAD
-if DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-    STATICFILES_DIRS = [
-    ]
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-=======
 # if DEBUG:
 #     STATICFILES_DIRS = [
 #         os.path.join(BASE_DIR, 'static')
 #     ]
 # else:
 #     STATIC_ROOT = os.path.join(BASE_DIR, "static/")
->>>>>>> c8c1e352595ba1492db622ea06835a1ad0fae3a5
 
 ALLOWED_HOSTS = ["api.dyadsocial.com", "localhost"]
 
@@ -62,12 +52,12 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'widget_tweaks',
     'core',
-    #'images',
+    'image_server',
     'api',
     'rest_framework',
     # 'corsheaders',
     'django_rest_passwordreset',
-    'chat',
+    #'chat',
     'channels'
 ]
 
