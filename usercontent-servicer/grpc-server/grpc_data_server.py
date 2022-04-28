@@ -1,4 +1,5 @@
 import asyncio
+import threading
 import logging
 import redis
 from typing import AsyncIterable, Iterable
@@ -11,6 +12,38 @@ import gens.posts_pb2_grpc as posts_grpc
 
 r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=False)
 
+# Creates a list for every possible time slot.
+# Alternatively could just remove any DateTime's past 2 days ago
+# We do it this way to make it simple to graph
+# Both O(n) Memory and Time
+# Users are naturally removed from activity once they're past 2 days
+class UserStats:
+    activitySetList = []
+    offset = 0
+
+    def __init__(self):
+        # 2 days, 24 hours, 60 minutes
+        for i in range(2 * 24 * 60):
+            self.activitySetList.append(set())
+
+    # Make the list a circular array
+    # Only needs to be called on refresh/query calls
+    # (Posting/Updating/Delete will call refresh)
+    def incrementOffset(self):
+        self.offset = (self.offset + 1) % (2 * 24 * 60)
+        print(activitySetList)
+    
+    # Marks a user's latest activity on the graph
+    def markUser(self, username: str):
+        print(f"User: {username} marked!")
+        for i in range(2 * 24 * 60):
+            self.activitySetList[i].remove(username)
+        self.activitySetList[self.offset].add(username)
+    
+u = UserStats()
+updateThread = threading.Timer(60, u.markUser, []
+
+# Gets post from users
 def getPosts(query, filter = None):
     posts_list = []
     index = 0;
@@ -32,11 +65,13 @@ def getPosts(query, filter = None):
 class PostSync(posts_grpc.PostsSyncServicer):
     async def refreshPosts(self, request: posts.PostQuery, context):
         print("Service: RefreshPosts")
+        u.incrementOffset()
         for post in getPosts(request.gid):
             yield post
 
     async def queryPosts(self, request: posts.PostQuery, context):
         print("Service: QueryPosts")
+        u.incrementOffset()
         for post in getPosts(request.gid):
             yield post
 
@@ -90,4 +125,5 @@ async def serve() -> None:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
+    updateThread.start()
     asyncio.run(serve())
