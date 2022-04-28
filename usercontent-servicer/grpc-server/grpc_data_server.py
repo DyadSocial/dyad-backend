@@ -31,17 +31,19 @@ class UserStats:
     # (Posting/Updating/Delete will call refresh)
     def incrementOffset(self):
         self.offset = (self.offset + 1) % (2 * 24 * 60)
-        print(activitySetList)
+        for i in range(2 * 24 * 60):
+            if len(self.activitySetList[i]) != 0:
+                print(f"Minute: {i}, Users: {self.activitySetList[i]}")
     
     # Marks a user's latest activity on the graph
     def markUser(self, username: str):
-        print(f"User: {username} marked!")
         for i in range(2 * 24 * 60):
-            self.activitySetList[i].remove(username)
+            self.activitySetList[i].discard(username)
         self.activitySetList[self.offset].add(username)
+        print(f"User: {username} marked!")
     
 u = UserStats()
-updateThread = threading.Timer(60, u.markUser, []
+updateThread = threading.Timer(60, u.markUser, [])
 
 # Gets post from users
 def getPosts(query, filter = None):
@@ -65,13 +67,13 @@ def getPosts(query, filter = None):
 class PostSync(posts_grpc.PostsSyncServicer):
     async def refreshPosts(self, request: posts.PostQuery, context):
         print("Service: RefreshPosts")
-        u.incrementOffset()
+        u.markUser(request.author)
         for post in getPosts(request.gid):
             yield post
 
     async def queryPosts(self, request: posts.PostQuery, context):
         print("Service: QueryPosts")
-        u.incrementOffset()
+        u.markUser(request.author)
         for post in getPosts(request.gid):
             yield post
 
