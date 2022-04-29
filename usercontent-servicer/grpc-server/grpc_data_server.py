@@ -20,30 +20,35 @@ r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=False)
 class UserStats:
     activitySetList = []
     offset = 0
+    _size = 2 * 24 * 60
 
     def __init__(self):
         # 2 days, 24 hours, 60 minutes
-        for i in range(2 * 24 * 60):
+        for i in range(self._size):
             self.activitySetList.append(set())
 
     # Make the list a circular array
     # Only needs to be called on refresh/query calls
     # (Posting/Updating/Delete will call refresh)
     def incrementOffset(self):
-        self.offset = (self.offset + 1) % (2 * 24 * 60)
-        for i in range(2 * 24 * 60):
+        self.offset = (self.offset + 1) % (self._size)
+        # Clear data
+        self.activitySetList[self.offset] = set()
+        print(f"Incrementing Offset {self.offset}")
+        for i in range(self._size):
             if len(self.activitySetList[i]) != 0:
                 print(f"Minute: {i}, Users: {self.activitySetList[i]}")
+        threading.Timer(60, self.incrementOffset, []).start()
     
     # Marks a user's latest activity on the graph
     def markUser(self, username: str):
-        for i in range(2 * 24 * 60):
+        for i in range(self._size):
             self.activitySetList[i].discard(username)
         self.activitySetList[self.offset].add(username)
         print(f"User: {username} marked!")
     
 u = UserStats()
-updateThread = threading.Timer(60, u.markUser, [])
+u.incrementOffset()
 
 # Gets post from users
 def getPosts(query, filter = None):
@@ -127,5 +132,4 @@ async def serve() -> None:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    updateThread.start()
     asyncio.run(serve())

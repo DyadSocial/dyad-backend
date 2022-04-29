@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from rest_framework import generics
+from core.forms import *
 
 
 from django_rest_passwordreset.models import ResetPasswordToken
@@ -133,6 +134,7 @@ class CreateDyadProfileView(generics.CreateAPIView):
         
         if serialized_data.is_valid():
             new_profile = DyadProfile(Profile = Dyaduser, 
+                                        picture_URL = serialized_data.data.get('picture_url'),
                                         Profile_Description = serialized_data.data.get('profile_description'),
                                         Display_name = serialized_data.data.get('display_name')
                                         )
@@ -157,16 +159,21 @@ class GetDyadProfileView(generics.ListAPIView):
 
     def get_object(self, queryset = None):
         token = self.request.headers.get('jwt')
-
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
-        
         try:
             payload = jwt.decode(token, 'secret', algorithms = ['HS256'])
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Unauthenticated, Cookie expired')
         
-        user = User.objects.filter(id = payload['id']).first()
+        print(self.request.GET.get("username"))
+        if self.request.GET.get("username") is None:
+            user = User.objects.filter(id = payload['id']).first()
+        else:
+            try:
+                user = User.objects.filter(username = self.request.GET.get("username")).first()
+            except:
+                user = None
 
         return user
     
@@ -219,6 +226,8 @@ class UpdateDyadProfileView(generics.UpdateAPIView):
             Update_Dyad_Profile.Profile_Description = serialized_data.data.get("new_description")
         if serialized_data.data.get("new_display_name"):
             Update_Dyad_Profile.Display_name = serialized_data.data.get("new_display_name")
+        if serialized_data.data.get("new_image"):
+            Update_Dyad_Profile.picture_URL = serialized_data.data.get("new_image")
         Update_Dyad_Profile.save()
     
         response = {
@@ -336,14 +345,12 @@ def DyadDeleteUser(request, pk):
     delete_user.delete()
     return Response("Successfully deleted user!")
 
+def reportUser(request):
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            form.save()
 
-
-# @api_view(['POST'])
-# def DyadLoginAuth(request):
-#     serialized_content = DyadAuthSerializer(data = request.data)
-
-#     if serialized_content.is_valid():
-#         if DyadUser.objects.filter(username = serialized_content["username"]).exists():
 
         
 

@@ -49,3 +49,4 @@ class DyadUpdateProfileSerializer(serializers.Serializer):
     model = DyadProfile
     new_description = serializers.CharField(required = False)
     new_display_name = serializers.CharField(required = False)
+    new_image = serializers.CharField(required = False)

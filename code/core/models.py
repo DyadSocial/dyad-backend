@@ -2,31 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, Group, User
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image
-
-# this class will
-# class test_ping(models.Model):
-#     ping_test = "this is a simple ping"
-#     #user = models.CharField(max_length = 24, unique = True)
-#     #email = models.CharField(max_length = 254)
-#     phone_number = PhoneNumberField(null=False, blank=False, unique=True)
-#     date_created = models.DateTimeField(auto_now_add = True)
-#     REQUIRED_FIELDS = ['phone_number','date_created']
 class DyadGroup(Group):
     Name = models.CharField(max_length = 24, unique = True)
-
-    
-    # image = models.ImageField(default='default.jpg', upload_to='profile_pics') #for profile picture
-
-    # def save(self):
-    #     super().save()
-
-    #     img = Image.open(self.image.path)
-
-    #     if img.height > 300 or img.width > 300:
-    #         output_size = (300, 300)
-    #         img.thumbnail(output_size)
-    #         img.save(self.image.path) 
-
 
 class DyadUser(User):
     #username = models.CharField(max_length = 24, unique = True)
@@ -47,6 +24,7 @@ class DyadUser(User):
 
 class DyadProfile(models.Model):
     Profile_Description = models.CharField(max_length = 200, default="BLANK", null=True)
+    picture_URL = models.CharField(max_length = 200, default="", null=True)
     Display_name = models.CharField(max_length = 24)
     Profile = models.OneToOneField(DyadUser, on_delete=models.CASCADE, 
                                         primary_key=True)    
@@ -56,3 +34,13 @@ class DyadProfile(models.Model):
 #     date_created = models.DateTimeField(auto_now_add = True)
 #     last_active = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 #     phone_number = PhoneNumberField(null=False, blank=False, unique=True)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
+class Report(models.Model):
+    reporter = models.CharField(max_length = 24)
+    offender = models.CharField(max_length = 24)
+    offending_title = models.CharField(max_length = 200)
+    offending_content = models.CharField(max_length = 2000)
+    image_url = models.CharField(max_length = 400)
+    post_time = models.DateTimeField(editable=True)
+    report_time = models.DateTimeField(editable=True)
+    report_reason = models.CharField(max_length = 2000)
