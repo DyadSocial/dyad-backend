@@ -9,6 +9,8 @@ from gens.google.protobuf.timestamp_pb2 import Timestamp
 import gens.content_pb2 as content
 import gens.posts_pb2 as posts
 import gens.posts_pb2_grpc as posts_grpc
+import gens.count_pb2 as active
+import gens.count_pb2_grpc as active_grpc
 
 r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=False)
 
@@ -69,6 +71,16 @@ def getPosts(query, filter = None):
         res.append(post)
     return res
 
+# converts set to count of each unit length
+def getCounts():
+    return [active.Count(count=len(activitySet)) for activitySet in u.activitySetList]
+
+class ActiveUsers(active_grpc.ActiveUsersServicer):
+    async def getRecentlyActive(self, request: active.ActiveQuery, context):
+        print("Service: ActiveQuery")
+        for count in getCounts():
+            yield count
+
 class PostSync(posts_grpc.PostsSyncServicer):
     async def refreshPosts(self, request: posts.PostQuery, context):
         print("Service: RefreshPosts")
@@ -124,6 +136,7 @@ class PostSync(posts_grpc.PostsSyncServicer):
 async def serve() -> None:
     server = grpc.aio.server()
     posts_grpc.add_PostsSyncServicer_to_server(PostSync(), server)
+    active_grpc.add_ActiveUsersServicer_to_server(ActiveUsers(), server)
     listen_addr = '0.0.0.0:50051'
     server.add_insecure_port(listen_addr)
     logging.info("Starting server on %s", listen_addr)

@@ -19,6 +19,7 @@ urlpatterns = [
     path('logout', views.LogoutView.as_view()),
     path('register', views.RegisterView.as_view()),
     path('change-password', views.PasswordResetTokenView.as_view()),
+    path('report', views.ReportView.as_view()),
     path(r'^password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('profile/create-user-profile', views.CreateDyadProfileView.as_view()),
     path('profile/update-user-profile', views.UpdateDyadProfileView.as_view()),

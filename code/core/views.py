@@ -15,13 +15,13 @@ from django_rest_passwordreset.models import ResetPasswordToken
 from django_rest_passwordreset.views import get_password_reset_token_expiry_time
 from django_rest_passwordreset.signals import reset_password_token_created
 
-from .serializers import DyadUserSerializer, DyadAuthSerializer, DyadResetPasswordSerializer, DyadNewProfileSerializer, DyadUpdateProfileSerializer, DyadProfileSerializer
+from .serializers import DyadUserSerializer, DyadAuthSerializer, DyadResetPasswordSerializer, DyadNewProfileSerializer, DyadUpdateProfileSerializer, DyadProfileSerializer, ReportSerializer
 from django.core import serializers as serial
 import jwt, datetime
 # from snippets.models import Snippet
 # from snippets.serializers import SnippetSerializer
 
-from .models import DyadUser, DyadProfile
+from .models import DyadUser, DyadProfile, Report
 
 class RegisterView(APIView):
     
@@ -98,6 +98,46 @@ class LogoutView(APIView):
         }
 
         return response
+
+"""
+End point to report a User with their offending content, their offending post
+"""
+class ReportView(generics.CreateAPIView):
+    serializer = ReportSerializer
+    model = Report
+    permission_class = ('IsAuthenticated')
+    def get_object(self, queryset = None):
+        token = self.request.headers.get('jwt')
+        if not token:
+            raise AuthenticationFailed("Unauthenticated!")
+        try:
+            payload = jwt.decode(token, 'secret', algorithms = ['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated, Cookie expired')
+        user = User.objects.filter(id = payload['id']).first()
+        return user
+
+    def post(self, request):
+        userobj = self.get_object()
+        serialized_data = ReportSerializer(data = request.data)
+        print(serialized_data.initial_data)
+        new_report = Report(
+            reporter = userobj.username,
+            offender = serialized_data.initial_data.get('offender'),
+            offending_title = serialized_data.initial_data.get('offending_title'),
+            offending_content = serialized_data.initial_data.get('offending_content'),
+            image_url = serialized_data.initial_data.get('image_url'),
+            report_reason = serialized_data.initial_data.get('report_reason'),
+            )
+        new_report.save()
+        response = {
+            'status': 'success',
+            'code': status.HTTP_200_OK,
+            'message': 'Report received'
+        }
+
+        return Response(response)
+
 
 class CreateDyadProfileView(generics.CreateAPIView):
 
@@ -238,7 +278,7 @@ class UpdateDyadProfileView(generics.UpdateAPIView):
         }
 
         return Response(response)
-          
+
 class PasswordResetTokenView(generics.UpdateAPIView):
 
     """

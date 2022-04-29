@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, Group, User
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image
+
 class DyadGroup(Group):
     Name = models.CharField(max_length = 24, unique = True)
 
@@ -36,11 +37,9 @@ class DyadProfile(models.Model):
 #     phone_number = PhoneNumberField(null=False, blank=False, unique=True)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 class Report(models.Model):
-    reporter = models.CharField(max_length = 24)
-    offender = models.CharField(max_length = 24)
+    reporter = models.CharField(max_length = 50)
+    offender = models.CharField(max_length = 50)
     offending_title = models.CharField(max_length = 200)
     offending_content = models.CharField(max_length = 2000)
     image_url = models.CharField(max_length = 400)
-    post_time = models.DateTimeField(editable=True)
-    report_time = models.DateTimeField(editable=True)
     report_reason = models.CharField(max_length = 2000)
