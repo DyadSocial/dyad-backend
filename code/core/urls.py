@@ -4,6 +4,12 @@ from core import views
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView, TokenVerifyView)
 # from dyadchat.views import index
 
+
+"""
+All the url paths of the core module director
+Author: Sam
+"""
+
 urlpatterns = [
     #url(r'^core/users$', views.user_list),
     # path('test-ping/', views.test_ping),
