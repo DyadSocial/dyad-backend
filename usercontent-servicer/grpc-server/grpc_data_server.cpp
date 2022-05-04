@@ -1,6 +1,6 @@
 /*
-  gRPC Dataserverp
-  https://github.com/grpc/grpc 
+  gRPC Dataserver Handling client requests for posts and images (manual chunking)
+Author: Vincent
 */
 
 #include <iostream>

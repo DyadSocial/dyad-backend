@@ -15,11 +15,13 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bposts.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xb0\x01\n\x04Post\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x30\n\x0clast_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63reated\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05title\x18\x06 \x01(\t\x12\r\n\x05group\x18\x07 \x01(\t\"4\n\tPostQuery\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0b\n\x03gid\x18\x06 \x01(\t\"K\n\rPostUploadAck\x12\n\n\x02id\x18\x01 \x01(\x05\x12.\n\nsaved_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"&\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04hwid\x18\x02 \x01(\t2\xa5\x01\n\tPostsSync\x12#\n\x0crefreshPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12!\n\nqueryPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12&\n\x0buploadPosts\x12\x05.Post\x1a\x0e.PostUploadAck(\x01\x12(\n\ndeletePost\x12\n.PostQuery\x1a\x0e.PostUploadAckb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bposts.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x96\x02\n\x04Post\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x30\n\x0clast_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63reated\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05title\x18\x06 \x01(\t\x12\r\n\x05group\x18\x07 \x01(\t\x12 \n\x08\x63omments\x18\x08 \x03(\x0b\x32\x0e.CommentThread\x12\x33\n\nevent_time\x18\t \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x42\r\n\x0b_event_time\"\x92\x01\n\x07\x43omment\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0c\n\x04text\x18\x03 \x01(\t\x12\x30\n\x0clast_updated\x18\x04 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12+\n\x07\x63reated\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"T\n\rCommentThread\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0c\n\x04text\x18\x03 \x01(\t\x12\x19\n\x07replies\x18\x04 \x03(\x0b\x32\x08.Comment\"4\n\tPostQuery\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06\x61uthor\x18\x02 \x01(\t\x12\x0b\n\x03gid\x18\x06 \x01(\t\"K\n\rPostUploadAck\x12\n\n\x02id\x18\x01 \x01(\x05\x12.\n\nsaved_time\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"&\n\x04User\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04hwid\x18\x02 \x01(\t2\xa5\x01\n\tPostsSync\x12#\n\x0crefreshPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12!\n\nqueryPosts\x12\n.PostQuery\x1a\x05.Post0\x01\x12&\n\x0buploadPosts\x12\x05.Post\x1a\x0e.PostUploadAck(\x01\x12(\n\ndeletePost\x12\n.PostQuery\x1a\x0e.PostUploadAckb\x06proto3')
 
 
 
 _POST = DESCRIPTOR.message_types_by_name['Post']
+_COMMENT = DESCRIPTOR.message_types_by_name['Comment']
+_COMMENTTHREAD = DESCRIPTOR.message_types_by_name['CommentThread']
 _POSTQUERY = DESCRIPTOR.message_types_by_name['PostQuery']
 _POSTUPLOADACK = DESCRIPTOR.message_types_by_name['PostUploadAck']
 _USER = DESCRIPTOR.message_types_by_name['User']
@@ -29,6 +31,20 @@ Post = _reflection.GeneratedProtocolMessageType('Post', (_message.Message,), {
   # @@protoc_insertion_point(class_scope:Post)
   })
 _sym_db.RegisterMessage(Post)
+
+Comment = _reflection.GeneratedProtocolMessageType('Comment', (_message.Message,), {
+  'DESCRIPTOR' : _COMMENT,
+  '__module__' : 'posts_pb2'
+  # @@protoc_insertion_point(class_scope:Comment)
+  })
+_sym_db.RegisterMessage(Comment)
+
+CommentThread = _reflection.GeneratedProtocolMessageType('CommentThread', (_message.Message,), {
+  'DESCRIPTOR' : _COMMENTTHREAD,
+  '__module__' : 'posts_pb2'
+  # @@protoc_insertion_point(class_scope:CommentThread)
+  })
+_sym_db.RegisterMessage(CommentThread)
 
 PostQuery = _reflection.GeneratedProtocolMessageType('PostQuery', (_message.Message,), {
   'DESCRIPTOR' : _POSTQUERY,
@@ -56,13 +72,17 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _POST._serialized_start=49
-  _POST._serialized_end=225
-  _POSTQUERY._serialized_start=227
-  _POSTQUERY._serialized_end=279
-  _POSTUPLOADACK._serialized_start=281
-  _POSTUPLOADACK._serialized_end=356
-  _USER._serialized_start=358
-  _USER._serialized_end=396
-  _POSTSSYNC._serialized_start=399
-  _POSTSSYNC._serialized_end=564
+  _POST._serialized_end=327
+  _COMMENT._serialized_start=330
+  _COMMENT._serialized_end=476
+  _COMMENTTHREAD._serialized_start=478
+  _COMMENTTHREAD._serialized_end=562
+  _POSTQUERY._serialized_start=564
+  _POSTQUERY._serialized_end=616
+  _POSTUPLOADACK._serialized_start=618
+  _POSTUPLOADACK._serialized_end=693
+  _USER._serialized_start=695
+  _USER._serialized_end=733
+  _POSTSSYNC._serialized_start=736
+  _POSTSSYNC._serialized_end=901
 # @@protoc_insertion_point(module_scope)

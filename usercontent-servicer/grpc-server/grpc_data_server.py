@@ -1,3 +1,6 @@
+# Author: Vincent
+# Implements the active user count server and posts server
+
 import asyncio
 import threading
 import logging
@@ -75,12 +78,14 @@ def getPosts(query, filter = None):
 def getCounts():
     return [active.Count(count=len(activitySet)) for activitySet in u.activitySetList]
 
+# Streams active users in every time bin
 class ActiveUsers(active_grpc.ActiveUsersServicer):
     async def getRecentlyActive(self, request: active.ActiveQuery, context):
         print("Service: ActiveQuery")
         for count in getCounts():
             yield count
 
+# Post CRUD
 class PostSync(posts_grpc.PostsSyncServicer):
     async def refreshPosts(self, request: posts.PostQuery, context):
         print("Service: RefreshPosts")

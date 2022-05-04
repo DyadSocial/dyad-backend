@@ -1,3 +1,5 @@
+# Author: Vincent
+# Installs all needed components to get a Debian container running for gRPC and Redis workloads on C++
 FROM debian:bullseye
 WORKDIR /workspace
 RUN mkdir -p /workspace/lib
